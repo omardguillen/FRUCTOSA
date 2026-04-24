@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia Malabsorció de Fructosa</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F7F4EF;
+    --warm-white: #FDFCFA;
+    --text: #1C1A17;
+    --text-muted: #6B6660;
+    --text-light: #A09A94;
+    --green-dark: #2D5016;
+    --green-mid: #4A7C2F;
+    --green-light: #EAF2E0;
+    --green-accent: #7DB855;
+    --red-dark: #6B1F1F;
+    --red-light: #FAE8E8;
+    --amber: #C8861A;
+    --amber-light: #FDF3E0;
+    --border: rgba(28,26,23,0.1);
+    --border-strong: rgba(28,26,23,0.2);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    font-size: 19px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--green-dark);
+    color: #fff;
+    padding: 2.5rem 1.5rem 2rem;
+    text-align: center;
+  }
+
+  header .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green-accent);
+    margin-bottom: 0.5rem;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 5vw, 38px);
+    font-weight: 400;
+    line-height: 1.2;
+    color: #fff;
+    margin-bottom: 0.75rem;
+  }
+
+  header p {
+    font-size: 16px;
+    color: rgba(255,255,255,0.65);
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-inner {
+    display: flex;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-inner::-webkit-scrollbar { display: none; }
+
+  nav button {
+    flex-shrink: 0;
+    padding: 1.2rem 1.8rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  nav button:hover { color: var(--text); }
+  nav button.active { color: var(--green-dark); border-bottom-color: var(--green-dark); font-weight: 500; }
+
+  /* MAIN */
+  main {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+
+  .section-sub {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-bottom: 1.75rem;
+  }
+
+  /* CAT TABS */
+  .cat-scroll {
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-bottom: 1.5rem;
+  }
+  .cat-scroll::-webkit-scrollbar { display: none; }
+
+  .cat-tabs {
+    display: flex;
+    gap: 8px;
+    white-space: nowrap;
+    padding-bottom: 2px;
+  }
+
+  .cat-tab {
+    padding: 10px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    border: 1px solid var(--border-strong);
+    border-radius: 20px;
+    background: var(--warm-white);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .cat-tab:hover { border-color: var(--green-mid); color: var(--green-mid); }
+  .cat-tab.active { background: var(--green-dark); color: #fff; border-color: transparent; }
+
+  /* FOOD GRID */
+  .food-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 580px) { .food-grid { grid-template-columns: 1fr; } }
+
+  .food-col {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .col-header {
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .col-good .col-header { background: var(--green-light); color: var(--green-dark); }
+  .col-bad .col-header { background: var(--red-light); color: var(--red-dark); }
+
+  .col-header::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+
+  .col-good .col-header::before { background: var(--green-mid); }
+  .col-bad .col-header::before { background: #C84B4B; }
+
+  .food-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 13px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 16px;
+    transition: background 0.1s;
+  }
+
+  .food-item:hover { background: var(--cream); }
+
+  .rank {
+    font-size: 12px;
+    color: var(--text-light);
+    min-width: 18px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .food-name { flex: 1; color: var(--text); }
+
+  .food-note {
+    font-size: 13px;
+    color: var(--text-light);
+    text-align: right;
+    max-width: 160px;
+    line-height: 1.3;
+  }
+
+  /* TIPS */
+  .tips-section-label {
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    margin: 2rem 0 1rem;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    margin-bottom: 0.5rem;
+  }
+
+  .tip-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .tip-card:hover { border-color: var(--green-accent); transform: translateY(-1px); }
+
+  .tip-emoji {
+    font-size: 26px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .tip-title {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 7px;
+    color: var(--text);
+  }
+
+  .tip-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* MENU */
+  .menu-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .menu-controls label {
+    font-size: 15px;
+    color: var(--text-muted);
+  }
+
+  .menu-controls select {
+    padding: 9px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--cream);
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+  }
+
+  .menu-controls select:focus { border-color: var(--green-mid); }
+
+  .btn-generate {
+    padding: 10px 26px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    background: var(--green-dark);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    margin-left: auto;
+  }
+
+  .btn-generate:hover { background: var(--green-mid); }
+  .btn-generate:active { transform: scale(0.98); }
+
+  .alert-info {
+    background: var(--amber-light);
+    border: 1px solid rgba(200, 134, 26, 0.3);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #7A5010;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .veg-pill {
+    display: inline-block;
+    background: var(--green-light);
+    color: var(--green-dark);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+    vertical-align: middle;
+    margin-left: 6px;
+  }
+
+  .day-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 1rem;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .day-header {
+    padding: 11px 16px;
+    background: var(--green-dark);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .meal-row {
+    display: flex;
+    gap: 16px;
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .meal-label {
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-light);
+    min-width: 90px;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .meal-text {
+    font-size: 16px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    font-size: 12px;
+    color: var(--text-light);
+    border-top: 1px solid var(--border);
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Guia personalitzada</p>
+  <h1>Malabsorció de fructosa</h1>
+  <p>Aliments, consells pràctics i planificador de menús adaptat al teu diagnòstic</p>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <button class="active" onclick="showSection('aliments', this)">Aliments</button>
+    <button onclick="showSection('consells', this)">Consells pràctics</button>
+    <button onclick="showSection('menu', this)">Planificador de menús</button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ALIMENTS -->
+  <div id="aliments" class="section active">
+    <h2 class="section-title">Guia d'aliments</h2>
+    <p class="section-sub">Ordenats de millor a pitjor dins de cada categoria</p>
+    <div class="cat-scroll">
+      <div class="cat-tabs" id="cat-tabs"></div>
+    </div>
+    <div class="food-grid" id="food-grid"></div>
+  </div>
+
+  <!-- CONSELLS -->
+  <div id="consells" class="section">
+    <h2 class="section-title">Consells pràctics</h2>
+    <p class="section-sub">Trucs per millorar la tolerància i evitar símptomes</p>
+    <div id="tips-container"></div>
+  </div>
+
+  <!-- MENU -->
+  <div id="menu" class="section">
+    <h2 class="section-title">Planificador de menús</h2>
+    <p class="section-sub">Menús aleatoris adaptats al teu diagnòstic</p>
+    <div class="alert-info">Tots els menús eviten aliments problemàtics. Clica tantes vegades com vulguis per obtenir combinacions noves.</div>
+    <div class="menu-controls">
+      <label>Tipus:</label>
+      <select id="menu-type">
+        <option value="normal">Omnívor</option>
+        <option value="veg">Vegetarià</option>
+      </select>
+      <label>Dies:</label>
+      <select id="menu-days">
+        <option value="1">1 dia</option>
+        <option value="3">3 dies</option>
+        <option value="7">Setmana completa</option>
+      </select>
+      <button class="btn-generate" onclick="generateMenu()">Genera menú aleatori</button>
+    </div>
+    <div id="menu-output"></div>
+  </div>
+
+</main>
+
+<footer>
+  Basat en el diagnòstic clínic de malabsorció de fructosa (ServiDigest, 2020). No substitueix l'assessorament mèdic o nutricional professional.
+</footer>
+
+<script>
+const categories = [
+  {id:'fruites',label:'Fruites'},
+  {id:'verdures',label:'Verdures'},
+  {id:'cereals',label:'Cereals i pans'},
+  {id:'proteines',label:'Proteïnes'},
+  {id:'lactis',label:'Làctics i begudes vegetals'},
+  {id:'llegums',label:'Llegums'},
+  {id:'begudes',label:'Begudes i alcohol'},
+  {id:'dolcos',label:'Dolços i condiments'},
+  {id:'cerveses',label:'Cerveses'},
+  {id:'vins',label:'Vins i alcohol'},
+];
+
+const foods = {
+  fruites:{
+    good:[
+      {name:'Maduixa i maduixeta',note:'La millor opció'},
+      {name:'Kiwi',note:'Molt ben tolerat'},
+      {name:'Llimona i llima',note:'Perfectes en cuina'},
+      {name:'Taronja i mandarina',note:'Quantitats normals'},
+      {name:'Plàtan poc madur (ferm, groc clar)',note:'Com més madur, més fructosa lliure'},
+      {name:'Pinya',note:'Moderada'},
+      {name:'Meló groc (honeydew)',note:'Millor que síndria'},
+    ],
+    bad:[
+      {name:'Alvocat',note:'Sorbitol i fructosa — evitar'},
+      {name:'Poma i pera',note:'Molt alta en fructosa'},
+      {name:'Mango',note:'Altíssim'},
+      {name:'Cireres',note:'Molt alta'},
+      {name:'Raïm',note:'Alta'},
+      {name:'Síndria',note:'Alta'},
+      {name:'Dàtil i figa',note:'Concentradíssim'},
+      {name:'Préssec i nectarina',note:'Alta + sorbitol'},
+      {name:'Pruna',note:'Alta + sorbitol'},
+      {name:'Caqui',note:'Alt — si molt madur, moderar'},
+    ]
+  },
+  verdures:{
+    good:[
+      {name:'Pastanaga',note:'Molt segura — base excel·lent'},
+      {name:'Mongeta verda fresca o congelada',note:'Una de les millors opcions'},
+      {name:'Carabassa',note:'Excel·lent'},
+      {name:'Carbassó pelat',note:'Pela sempre la pell'},
+      {name:'Espinacs i bledes',note:'Molt bé'},
+      {name:'Patata',note:'Base segura — la millor opció'},
+      {name:'Moniato',note:'Mannitol — racions petites (~70g)'},
+      {name:'Enciam, ruca i escarola',note:'Molt bé'},
+      {name:'Kale (col arrissada)',note:'La millor de les crucíferes'},
+      {name:'Albergínia',note:'Molt bé'},
+      {name:'Blat de moro en gra',note:'Bé — no en xarop'},
+      {name:'Gírgoles (setas de cardo)',note:'Molt més segures que el xampinyó'},
+      {name:'Cogombre',note:'Bé'},
+      {name:'Api',note:'Bé'},
+      {name:'Nap i xirivia',note:'Bé en quantitats normals'},
+      {name:'Part verda del cebollní/cebolleta',note:'La part verda sí — la blanca no'},
+      {name:'Tomàquet fresc',note:'Quantitats normals, no concentrat'},
+      {name:'Pebre vermell escalivat (sense pell)',note:'Pelat bé, sense problema — la pell és el problema'},
+      {name:'Ràbano',note:'Bé en quantitats petites'},
+    ],
+    bad:[
+      {name:'Ceba (crua o cuita)',note:'Molt alta en fructans — la pitjor'},
+      {name:'All',note:'Altíssim en fructans'},
+      {name:'Porro',note:'Alt en fructans'},
+      {name:'Col de Brussel·les',note:'De les pitjors — GOS i fructosa'},
+      {name:'Espàrrec',note:'Alt en fructans'},
+      {name:'Carxofa',note:'Alt en fructans'},
+      {name:'Col i col llombarda',note:'GOS — quantitats petites si de cas'},
+      {name:'Bròquil i coliflor',note:'FODMAP mitjos — moderar molt'},
+      {name:'Pèsols',note:'Contenen GOS — moderar'},
+      {name:'Remolatxa',note:'Alta en sucres'},
+      
+      {name:'Part blanca del cebollní/cebolleta',note:'Fructans — la part verda sí'},
+      {name:'Xampinyó blanc',note:'Mannitol — pot inflar tot i ser baix en fructosa'},
+      {name:'Shiitake i bolets secs / concentrats',note:'Concentren sucres i manitol'},
+    ]
+  },
+  cereals:{
+    good:[
+      {name:'Arròs blanc i integral (arroz blanco e integral)',note:'El millor de tots'},
+      {name:'Pa de blat de moro / maïs (pan de maíz)',note:'Sense fructans'},
+      {name:'Quinoa',note:'Nutritiva i segura'},
+      {name:'Fajol / sarraí (trigo sarraceno / alforfón)',note:'Excel·lent alternativa'},
+      {name:'Pa de masa mare >12h (pan de masa madre)',note:'Fermentació redueix fructans'},
+      {name:'Polenta i crackers de maïs (maíz)',note:'Molt bé'},
+      {name:'Pa d\'arròs',note:'Molt segur'},
+      {name:'Civada / avena (molt poca quantitat)',note:'Fructans — en sòlid tolerable, en líquid concentra'},
+      {name:'Amarant (amaranto)',note:'Bona alternativa'},
+    ],
+    bad:[
+      {name:'Pa de blat convencional (pan de trigo)',note:'Alt en fructans'},
+      {name:'Pasta de blat (pasta de trigo)',note:'Alta'},
+      {name:'Cuscús i sèmola (cuscús y sémola de trigo)',note:'Alt'},
+      {name:'Seitan',note:'Gluten pur — fructans'},
+      {name:'Sègol (centeno)',note:'Alt en fructans'},
+      {name:'Ordi (cebada)',note:'Alt'},
+    ]
+  },
+  proteines:{
+    good:[
+      {name:'Sardines en conserva (oli o tomàquet)',note:'Excel·lents — omega-3, sense fructosa'},
+      {name:'Peix blau i blanc',note:'Perfecte, sense fructosa'},
+      {name:'Pollastre i gall d\'indi',note:'Molt bé'},
+      {name:'Ous',note:'Perfectes'},
+      {name:'Marisc i mol·luscs',note:'Molt bé'},
+      {name:'Carn vermella',note:'Bé en quantitats mod.'},
+      {name:'Tofu ferm',note:'Bé en quantitats normals'},
+      {name:'Tempeh',note:'Millor opció proteica vegetal'},
+      {name:'Heura / soja texturitzada',note:'Prova i observa la tolerància'},
+    ],
+    bad:[
+      {name:'Embotits processats',note:'Solen tenir additius dolços'},
+      {name:'Hamburgueses comercials',note:'Additius problemàtics'},
+      {name:'Salses de marinat comercials',note:'Solen tenir HFCS'},
+    ]
+  },
+  lactis:{
+    good:[
+      {name:'Llet de vaca',note:'Lactosa negativa — perfecta'},
+      {name:'Iogurt natural',note:'Molt bé'},
+      {name:'Formatge curat',note:'La millor opció làctica — molt baixa en lactosa i fructans'},
+      {name:'Formatge de cabra curat',note:'Excel·lent alternativa al de vaca'},
+      {name:'Formatge fresc',note:'Bé'},
+      {name:'Mantequilla i ghee',note:'Perfectes'},
+      {name:'Llet d\'arròs (sense sucre)',note:'Molt segura'},
+      {name:'Llet d\'ametlla (sense sucre)',note:'Bé en quantitats normals'},
+      {name:'Llet de civada',note:'Fructans concentrats en líquid — evitar'},
+      {name:'Llet de coco (sense additius)',note:'Bé'},
+    ],
+    bad:[
+      {name:'Llet de cashew/anacardo',note:'Alta en oligosacàrids'},
+      {name:'Begudes vegetals amb sucre afegit',note:'Llegeix etiquetes sempre'},
+      {name:'Iogurts de fruita industrials',note:'Solen tenir HFCS o mel'},
+    ]
+  },
+  llegums:{
+    good:[
+      {name:'Llenties (ben cuites)',note:'Les millors — remull previ, contenen GOS'},
+      {name:'Cigrons (cuits i escorreguts)',note:'Bé en quantitats moderades'},
+      {name:'Edamame',note:'Moderar la quantitat'},
+    ],
+    bad:[
+      {name:'Mongetes blanques i negres',note:'Més problemàtiques'},
+      {name:'Faves',note:'Alta en oligosacàrids'},
+      {name:'Llegums en conserva amb additius',note:'Llegeix etiquetes'},
+    ]
+  },
+  begudes:{
+    good:[
+      {name:'Aigua',note:'La millor de totes'},
+      {name:'Matcha (sense sucres afegits)',note:'Perfecte — vigila lattes comercials'},
+      {name:'Matcha (sense sucres afegits)',note:'Perfecte — vigila lattes comercials'},
+      {name:'Infusions (menta, gingebre)',note:'Molt bé — ajuden la digestió'},
+      {name:'Cafè sol',note:'Bé'},
+      {name:'Vi negre (quantitat petita)',note:'La millor opció alcohòlica'},
+      {name:'Spirits purs (whisky, vodka, gin)',note:'Sense barrejar amb sucs'},
+      {name:'Espiga (catalana, sorgo/arròs)',note:'La millor opció local'},
+      {name:'Green\'s (belga, sorgo/mill/fajol)',note:'Fàcil de trobar a BCN'},
+      {name:'Brunehaut (belga, sorgo)',note:'Orgànica, molt bona'},
+      {name:'Glutenberg (canadenca, sorgo/mill)',note:'Artesana, excel·lent'},
+      {name:'New Grist (sorgo/arròs)',note:'Naturalment sense gluten'},
+    ],
+    bad:[
+      {name:'Cervesa de blat (weizen, blanche)',note:'Fructans de blat — les pitjors'},
+      {name:'Cervesa artesana sense filtrar',note:'Fermentació incompleta, més fructans'},
+      {name:'Sidra (cider de poma)',note:'Fructosa alta — evitar'},
+      {name:'Sucs de fruita (concentrats o naturals)',note:'Molt alta en fructosa'},
+      {name:'Refrescos comercials',note:'HFCS molt comú'},
+      {name:'Còctels dolços',note:'Xarops i sucs problemàtics'},
+      {name:'Vi blanc i cava',note:'Moderar — pitjor que el negre'},
+      {name:'Begudes amb xarop d\'agave',note:'Altíssim en fructosa'},
+    ]
+  },
+  cerveses:{
+    good:[
+      {name:'Espiga (catalana — sorgo/arròs)',note:'La millor opció — sense ordi ni blat'},
+      {name:'Green\'s Discovery (belga — sorgo/mill/fajol)',note:'Molt bona, es troba a BCN'},
+      {name:'Brunehaut (belga — sorgo)',note:'Orgànica, artesana, excel·lent'},
+      {name:'Mongozo Premium Pilsener (sorgo)',note:'Ecològica i de comerç just'},
+      {name:'Glutenberg Blonde (canadenca — mill/maïs)',note:'Artesana 100% sense gluten'},
+      {name:'New Grist (USA — sorgo/arròs)',note:'Naturalment sense gluten'},
+      {name:'Schnitzerbrau (alemanya — mill)',note:'Ecològica, sense ordi'},
+      {name:'Moritz / Estrella / San Miguel (lager filtrada)',note:'Fermentació redueix fructans >90% — 1 unitat'},
+      {name:'Mahou / Águila (lager filtrada clara)',note:'Similar — moderar i observar reacció'},
+      {name:'Budweiser / Corona (arròs + ordi)',note:'Baixa en fructans per la fermentació llarga'},
+      {name:'Heineken / Amstel (lager lleuger)',note:'Moderar — prova amb 1 unitat'},
+    ],
+    bad:[
+      {name:'Cerveses de blat (blanche, weizen)',note:'Blat té més fructans que l\'ordi'},
+      {name:'Cerveses artesanes sense filtrar (cloudy)',note:'Fermentació incompleta — més fructans residuals'},
+      {name:'Cerveses amb mel o fruita afegida',note:'Fructosa directa afegida'},
+      {name:'Daura / Estrella Galicia SG / Ambar SG',note:'Paradoxa: ordi enzimàtic conserva més fructans que la lager normal'},
+      {name:'Mahou SG / San Miguel SG',note:'Mateix problema — pitjor que la versió normal'},
+      {name:'Sidra (cider)',note:'Feta de poma — fructosa alta'},
+      {name:'Cerveses dolces o de postres',note:'Sucres afegits problemàtics'},
+    ]
+  },
+  vins:{
+    good:[
+      {name:'Vi negre sec (Rioja, Priorat, Ribera)',note:'La millor opció alcohòlica'},
+      {name:'Vi negre jove (Garnatxa, Tempranillo)',note:'Molt bé en quantitats mod.'},
+      {name:'Vi negre francès (Bordeaux, Côtes du Rhône)',note:'Bons i accessibles a BCN'},
+      {name:'Vi negre italià (Chianti, Montepulciano)',note:'Baixos en sucres residuals'},
+      {name:'Vi rosé sec',note:'Millor que el blanc, moderar'},
+      {name:'Vodka pur (sense barrejar)',note:'Sense gluten ni fructosa'},
+      {name:'Whisky pur (sense mixer)',note:'Bé en quantitats petites'},
+      {name:'Gin pur (sense tònica dolça)',note:'Amb aigua o gel'},
+      {name:'Tequila pur',note:'Fermentació elimina la fructosa de l\'agave'},
+    ],
+    bad:[
+      {name:'Vi blanc dolç (Riesling dolç, Moscatell)',note:'Alt en sucres residuals'},
+      {name:'Cava i Champagne',note:'Sucres de la segona fermentació'},
+      {name:'Vi de postres i Porto',note:'Altíssim en sucres'},
+      {name:'Sangria commercial',note:'Ple de fructosa afegida'},
+      {name:'Còctels amb sucs o xarops',note:'Molt problemàtics'},
+      {name:'Licors dolços (Baileys, Amaretto...)',note:'Plens de sucres'},
+      {name:'Cervesa (totes les convencionals)',note:'Fructans d\'ordi i blat'},
+    ]
+  },
+  dolcos:{
+    good:[
+      {name:'Xocolata negra >70% (poca)',note:'Sense sucres afegits'},
+      {name:'Oli d\'oliva',note:'Perfecte'},
+      {name:'Galetes d\'arròs sense additius',note:'Bé'},
+      {name:'Sucre de taula (sacarosa, poc)',note:'Millor que fructosa pura'},
+      {name:'Herbes i espècies naturals',note:'Majoria bé (all en pols: no)'},
+      {name:'Tamari / salsa de soja (poc)',note:'Quantitats petites'},
+    ],
+    bad:[
+      {name:'Mel',note:'Altíssima en fructosa'},
+      {name:'Xarop d\'agave',note:'El pitjor — evitar totalment'},
+      {name:'Ketchup i salses comercials',note:'Solen tenir HFCS'},
+      {name:'Dolços industrials',note:'HFCS molt comú'},
+      {name:'Caramels i llaminadures',note:'Llegeix etiquetes sempre'},
+      {name:'Fructosa pura (edulcorant)',note:'Evitar totalment'},
+    ]
+  }
+};
+
+const tipsData = [
+  {
+    section:'Preparació d\'aliments',
+    items:[
+      {e:'🥒',t:'Pela el carbassó',d:'La pell del carbassó concentra més fructosa que la polpa. Pela\'l sempre abans de cuinar, fins i tot si fas cremes o wok.'},
+      {e:'🍞',t:'Congela el pa',d:'Congelar i descongelar el pa (especialment el de masa mare) redueix els fructans fins a un 30-40%. Un truc senzill i molt efectiu.'},
+      {e:'🫘',t:'Remulla els llegums',d:'Deixa les llenties o cigrons en remull almenys 8-12h i tira l\'aigua. Escorre\'ls bé després de coure\'ls per eliminar oligosacàrids.'},
+      {e:'🧅',t:'Aromatitza sense ingerir all ni ceba',d:'Sofregeix la ceba o l\'all sencers en oli i treu-los abans de menjar. Els fructans no passen a l\'oli, però el sabor sí. Truc molt útil.'},
+      {e:'🍅',t:'Tomàquet fresc, no concentrat',d:'El tomàquet concentrat o en conserva té molta més fructosa per unitat que el fresc. Usa\'l en petit quan és concentrat o fes servir el fresc picat.'},
+      {e:'🍳',t:'Cou les verdures',d:'Cuinar les verdures redueix lleugerament el contingut de fructosa respecte al cru. Prioritza les verdures cuites sobre les crues si notes sensibilitat.'},
+    ]
+  },
+  {
+    section:'Hàbits al menjar',
+    items:[
+      {e:'🍓',t:'No barregis fruites problemàtiques',d:'Si menges una fruita que et pot costar (taronja, plàtan), no la barregis amb cap altra en el mateix àpat. La càrrega acumulada de fructosa importa molt.'},
+      {e:'🍽️',t:'Fruita sola i no de postre',d:'Menjar fruita com a postre, juntament amb altres aliments rics en sucres, augmenta la càrrega total. Millor com a esmorzar o berena, sola.'},
+      {e:'📏',t:'Controla les porcions de fruita',d:'Una fruita tolerable en petita quantitat pot no ser-ho en gran quantitat. La dosi fa el verí amb la fructosa: comença petit i amplia si vas bé.'},
+      {e:'⏱️',t:'Menja lent i mastega bé',d:'La velocitat de trànsit intestinal afecta l\'absorció. Mastegar bé i menjar pausat dóna temps al teu intestí per processar millor.'},
+      {e:'🔄',t:'Rota els aliments tolerats',d:'No mengis el mateix aliment "acceptable" en gran quantitat cada dia. La càrrega acumulada pot crear símptomes tot i que individualment no en creïn.'},
+      {e:'📓',t:'Porta un diari alimentari',d:'Anota el que menges i com et trobes. Sovint hi ha patrons que no es veuen sense escriure-ho. Especialment útil els primers mesos.'},
+    ]
+  },
+  {
+    section:'Compres i etiquetes',
+    items:[
+      {e:'🏷️',t:'Busca HFCS a les etiquetes',d:'High-fructose corn syrup (jarabe de maíz de alta fructosa) apareix en molts productes industrials. Evita-ho sempre, fins i tot en productes "saludables".'},
+      {e:'🍯',t:'Compte amb productes "naturals"',d:'Mel, nèctar d\'agave, fructosa pura i xarop de dàtils solen aparèixer en productes presentats com a saludables. Tots molt problemàtics.'},
+      {e:'🧃',t:'Cap suc de fruita, ni natural',d:'Un got de suc concentra la fructosa de 4-5 fruites sense la fibra que alenteix l\'absorció. Evita\'ls completament.'},
+      {e:'💊',t:'Compte amb alguns medicaments',d:'Molts xarops i medicaments líquids usen sorbitol o fructosa com a edulcorant. Comprova el prospecte si tens símptomes sense causa clara.'},
+    ]
+  },
+  {
+    section:'Cerveses — com triar bé',
+    items:[
+      {e:'🍺',t:'Llager filtrada = menys fructans',d:'La fermentació llarga i el filtrat eliminen més del 90% dels fructans de l\'ordi. Una llager clara i filtrada (Moritz, Estrella, San Miguel, Mahou) és molt més segura que una ale o sense filtrar.'},
+      {e:'☁️',t:'Evita les cerveses tèrboles (cloudy)',d:'Una cervesa tèrbola vol dir fermentació incompleta i menys filtrat. Això significa més fructans residuals. Com més clara i brillant, millor per a tu.'},
+      {e:'🌾',t:'Blat pitjor que ordi',d:'Les cerveses de blat (weizen, blanche, witbier) contenen molt més fructans que les de ordi, i a més la fermentació no els elimina tan bé. Evita-les sempre.'},
+      {e:'🍯',t:'Amb mel o fruita — mai',d:'Qualsevol cervesa que porti mel, fruita o xarops afegits combina fructans residuals amb fructosa directa. Doble problema.'},
+      {e:'🔬',t:'La paradoxa de la "sense gluten" d\'ordi',d:'Daura, Ambar SG, Mahou SG... El procés enzimàtic que treu el gluten és diferent de la fermentació que elimina els fructans. Poden tenir més fructans residuals que una llager normal.'},
+      {e:'🫧',t:'La carbonatació pot molestar igual',d:'Fins i tot amb pocs fructans, la gas de la cervesa pot causar inflor. Si notes que et molesta, no és necessàriament pels fructans — pot ser simplement per les bombolles.'},
+      {e:'1️⃣',t:'Comença per una unitat',d:'Encara que les llagers siguin baixes en fructans, l\'alcohol en si mateix afecta la motilitat intestinal. Comença amb una unitat i observa. No superis dues en un àpat.'},
+      {e:'🍽️',t:'Beu amb menjar',d:'Beure cervesa amb un àpat (proteïna o arròs) alenteix l\'absorció i redueix l\'impacte intestinal. Pitjor en dejú o amb snacks dolços.'},
+    ]
+  },
+  {
+    section:'Alcohol i begudes',
+    items:[
+      {e:'🍺',t:'La cervesa és problemàtica',d:'Conté fructans del blat i l\'ordi. Si beus alcohol, opta per vi negre en quantitats petites o spirits purs sense barrejar amb sucs ni xarops.'},
+      {e:'🍷',t:'Vi negre: la millor opció alcohòlica',d:'En quantitats moderades és la beguda alcohòlica menys problemàtica. El vi blanc i el cava, menys recomanables però ocasionalment tolerables.'},
+      {e:'🍹',t:'Sense còctels dolços',d:'Els xarops, sucs i edulcorants dels còctels comercials solen ser molt problemàtics. Si beus, spirits amb aigua o gel.'},
+      {e:'🌿',t:'Infusions: un gran aliat',d:'La infusió de menta piperita és especialment bona per a la digestió. El gingebre, la menta i la llimona ajuden a calmar el tracte digestiu.'},
+    ]
+  },
+];
+
+const menus = {
+  normal:{
+    esmorzar:['Arròs inflat amb llet de vaca i maduixes fresques','Pa de masa mare torrat amb mantequilla i ou dur','Iogurt natural amb kiwi tallat i nous (petita quantitat)','Ou remenat amb espinacs i pa d\'arròs','Plàtan poc madur (ferm) amb formatge fresc i cafè sol','Creps de fajol amb mantequilla i llimona','Pa de blat de moro torrat amb ou ferrat i cafè'],
+    mig_mati:['Galetes d\'arròs amb mantequilla de cacauet natural','Kiwi i infusió de menta','Formatge curat i nous (petita quantitat)','Maduixes fresques','Iogurt natural sense additius','Ou dur i infusió de gingebre','Galetes de maïs sense additius'],
+    dinar:['Arròs blanc amb pit de pollastre a la planxa i pastanaga cuita','Quinoa amb salmó al forn i carbassó pelat saltat','Llenties estofades (sense ceba ni all) amb pastanaga i api','Patata al forn amb peix blanc al vapor i espinacs saltejats','Pasta d\'arròs amb carbassó pelat, oli d\'oliva i parmesà','Pollastre al forn amb moniato cuit i enciam','Filet de vedella a la planxa amb polenta cremosa i xampinyons saltats'],
+    berenar:['Maduixes amb iogurt natural','Pa de masa mare amb formatge curat','Galetes d\'arròs amb mantequilla','Kiwi i infusió de menta','Plàtan poc madur (1 unitat, ferm)'],
+    sopar:['Crema de carbassa (sense ceba, amb oli d\'oliva i cúrcuma)','Peix blanc al vapor amb arròs blanc i enciam','Ou a la cocotte amb espinacs saltejats i pa d\'arròs','Filet de salmó a la planxa amb quinoa i pastanaga cuita','Llenties tèbies amb carbassó pelat i oli de llimona','Pollastre rostit amb patata al forn i xampinyons saltats','Truita de patata sense ceba amb amanida d\'enciam i kiwi'],
+  },
+  veg:{
+    esmorzar:['Iogurt natural amb maduixes i nous (petita quantitat)','Pa de blat de moro torrat amb mantequilla i kiwi','Porridge d\'arròs amb llet de civada i plàtan poc madur (ferm)','Creps de fajol amb iogurt natural i llimona','Pa de masa mare amb formatge fresc i maduixes','Llet d\'ametlla sense sucre amb arròs inflat i kiwi','Galetes de maïs amb tahini i 1 kiwi'],
+    mig_mati:['Kiwi i infusió de menta','Formatge curat i galetes d\'arròs','Iogurt natural sense additius','Maduixes fresques','Nous i 1 mandarina petita','Plàtan poc madur (ferm) (1 unitat)','Hummus de cigrons casolà amb pastanaga crua'],
+    dinar:['Arròs saltat amb tofu ferm, carbassó pelat i pastanaga','Quinoa amb cigrons escorreguts, espinacs i oli d\'oliva','Llenties estofades amb pastanaga, api i cúrcuma (sense ceba)','Pasta d\'arròs amb pesto de ruca, parmesà i xampinyons','Polenta cremosa amb gírgoles saltades i ou ferrat','Bowl de quinoa, edamame (poc), enciam i llimona','Carbassó pelat farcit d\'arròs, bolets i formatge gratinats'],
+    berenar:['Maduixes amb iogurt natural','Galetes d\'arròs amb mantequilla','Kiwi i infusió de gingebre','Pa de masa mare amb formatge curat','Plàtan poc madur (ferm) (1 unitat)'],
+    sopar:['Crema de carbassa amb llet de coco (sense ceba, sense all)','Ou a la cocotte amb espinacs i pa d\'arròs torrat','Llenties tèbies amb pastanaga cuita i oli de llimona','Tofu ferm a la planxa amb quinoa i enciam','Carbassó pelat al forn amb gírgoles saltades i ou ferrat','Creps de fajol amb formatge fresc i espinacs salts','Sopa de miso suau (poca quantitat) amb tofu i llenties'],
+  }
+};
+
+let currentCat = 'fruites';
+
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function buildCatTabs() {
+  const el = document.getElementById('cat-tabs');
+  el.innerHTML = '';
+  categories.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-tab' + (c.id === currentCat ? ' active' : '');
+    btn.textContent = c.label;
+    btn.onclick = () => { currentCat = c.id; buildCatTabs(); buildFoodGrid(); };
+    el.appendChild(btn);
+  });
+}
+
+function buildFoodGrid() {
+  const el = document.getElementById('food-grid');
+  el.innerHTML = '';
+  const data = foods[currentCat];
+
+  const goodCol = document.createElement('div');
+  goodCol.className = 'food-col col-good';
+  goodCol.innerHTML = `<div class="col-header">Pots menjar</div>`;
+  data.good.forEach((f, i) => {
+    const div = document.createElement('div');
+    div.className = 'food-item';
+    div.innerHTML = `<span class="rank">${i+1}</span><span class="food-name">${f.name}</span><span class="food-note">${f.note}</span>`;
+    goodCol.appendChild(div);
+  });
+
+  const badCol = document.createElement('div');
+  badCol.className = 'food-col col-bad';
+  badCol.innerHTML = `<div class="col-header">Evita o limita</div>`;
+  data.bad.forEach((f, i) => {
+    const div = document.createElement('div');
+    div.className = 'food-item';
+    div.innerHTML = `<span class="rank">${i+1}</span><span class="food-name">${f.name}</span><span class="food-note">${f.note}</span>`;
+    badCol.appendChild(div);
+  });
+
+  el.appendChild(goodCol);
+  el.appendChild(badCol);
+}
+
+function buildTips() {
+  const container = document.getElementById('tips-container');
+  tipsData.forEach(section => {
+    const label = document.createElement('p');
+    label.className = 'tips-section-label';
+    label.textContent = section.section;
+    container.appendChild(label);
+
+    const grid = document.createElement('div');
+    grid.className = 'tips-grid';
+    section.items.forEach(tip => {
+      const card = document.createElement('div');
+      card.className = 'tip-card';
+      card.innerHTML = `<span class="tip-emoji">${tip.e}</span><div class="tip-title">${tip.t}</div><div class="tip-text">${tip.d}</div>`;
+      grid.appendChild(card);
+    });
+    container.appendChild(grid);
+  });
+}
+
+function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function generateMenu() {
+  const type = document.getElementById('menu-type').value;
+  const days = parseInt(document.getElementById('menu-days').value);
+  const data = menus[type];
+  const out = document.getElementById('menu-output');
+  out.innerHTML = '';
+  const dayNames = ['Dilluns','Dimarts','Dimecres','Dijous','Divendres','Dissabte','Diumenge'];
+  const isVeg = type === 'veg';
+
+  for (let i = 0; i < days; i++) {
+    const card = document.createElement('div');
+    card.className = 'day-card';
+    card.style.animationDelay = (i * 0.06) + 's';
+    card.innerHTML = `
+      <div class="day-header">
+        <span>${days === 1 ? 'Menú del dia' : dayNames[i]}</span>
+        ${isVeg ? '<span class="veg-pill">vegetarià</span>' : ''}
+      </div>
+      <div class="meal-row"><span class="meal-label">Esmorzar</span><span class="meal-text">${getRandom(data.esmorzar)}</span></div>
+      <div class="meal-row"><span class="meal-label">Mig matí</span><span class="meal-text">${getRandom(data.mig_mati)}</span></div>
+      <div class="meal-row"><span class="meal-label">Dinar</span><span class="meal-text">${getRandom(data.dinar)}</span></div>
+      <div class="meal-row"><span class="meal-label">Berenar</span><span class="meal-text">${getRandom(data.berenar)}</span></div>
+      <div class="meal-row"><span class="meal-label">Sopar</span><span class="meal-text">${getRandom(data.sopar)}</span></div>
+    `;
+    out.appendChild(card);
+  }
+}
+
+buildCatTabs();
+buildFoodGrid();
+buildTips();
+generateMenu();
+</script>
+</body>
+</html>
